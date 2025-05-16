@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestión de Pedidos</title>
+</head>
+<body>
+    <h1>Gestión de Pedidos</h1>
+    <p><a href="{% url 'logout' %}">Cerrar Sesión</a></p>
+    <form method="get">
+        <label for="status">Estado:</label>
+        <select name="status" id="status">
+            <option value="">Todos</option>
+            <option value="pending">Pendiente</option>
+            <option value="attended">Atendido</option>
+        </select>
+        <label for="customer_name">Nombre del Cliente:</label>
+        <input type="text" name="customer_name" id="customer_name">
+        <button type="submit">Filtrar</button>
+    </form>
+    {% for order in orders %}
+        <div>
+            <p>Pedido {{ order.id }} - {{ order.customer_name }} - {{ order.status }} - ${{ order.total_price }}</p>
+            {% if order.status == 'pending' %}
+                <form method="post" action="{% url 'update_order_status' order.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="attended">
+                    <button type="submit">Marcar como Atendido</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+</body>
+</html>
